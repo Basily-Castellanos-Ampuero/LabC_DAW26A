@@ -1,0 +1,40 @@
+# Los 67 ejercicios de la pagina web:
+<p> (La pagina no dio ningún recurso al terminarlos, a pesar de iniciar secion cada vez que se avanzaba al siguiente ejercicios no se guardaban los resultados)</p>
+# Capturas:
+
+![image](https://github.com/user-attachments/assets/e4995bce-e444-49e8-baac-00bda29c6715)
+![image](https://github.com/user-attachments/assets/db9cb3e5-7ba4-4af6-8bdb-97bc81d00e61)
+![image](https://github.com/user-attachments/assets/ff411bd1-3d07-4189-87b7-42ea25f1907d)
+![image](https://github.com/user-attachments/assets/f545c338-44e1-40cc-9c7a-405a153b45d1)
+![image](https://github.com/user-attachments/assets/0204bbe4-f19b-480c-978b-9d3f40584cba)
+![image](https://github.com/user-attachments/assets/ffb180eb-cfa7-42ea-9e41-9fcbf52d4f6e)
+![image](https://github.com/user-attachments/assets/94e09357-c6fe-4d6d-aed7-b2535f98970b)
+![image](https://github.com/user-attachments/assets/18207a01-77d5-47bb-99ad-f6ba35fc0918)
+![image](https://github.com/user-attachments/assets/7c2b6905-e062-433c-8020-6ecb9208b5ef)
+![image](https://github.com/user-attachments/assets/aec3ca88-484b-45b2-91e8-6fe7bc856607)
+![image](https://github.com/user-attachments/assets/04c2df1b-6d0f-4c47-a394-3d40ecd0baf0)
+![image](https://github.com/user-attachments/assets/d8201714-c4f9-4359-94a5-9997e8af16c0)
+![image](https://github.com/user-attachments/assets/920d7526-af05-480f-ae42-ad58884e7ca7)
+![image](https://github.com/user-attachments/assets/2412047e-2a8a-439c-8ac9-2f6f68d91d99)
+![image](https://github.com/user-attachments/assets/69946918-c586-4da3-b091-8da1d4470c0a)
+![image](https://github.com/user-attachments/assets/432172e3-5bef-4755-b645-59ff02b15452)
+![image](https://github.com/user-attachments/assets/b81751d2-3d7c-475e-aba6-023a29ae8a0c)
+![image](https://github.com/user-attachments/assets/5e6f9b3d-2477-4584-935d-b0e1b54f99f1)
+![image](https://github.com/user-attachments/assets/89a6a528-e438-4359-a7b3-d9439e4198da)
+![image](https://github.com/user-attachments/assets/3795f9c7-35b3-4d65-a2a9-33efefd1b3ad)
+![image](https://github.com/user-attachments/assets/61e5dca7-488c-42a9-a4fb-5210ee4bcd46)
+![image](https://github.com/user-attachments/assets/2eb46b15-1ba9-47a2-973a-0b3c5cead3e8)
+![image](https://github.com/user-attachments/assets/ab939331-0d7e-452f-9fa7-1ed0ee798053)
+![image](https://github.com/user-attachments/assets/c7d39f65-0a72-4810-9ce9-d62e3c8ef311)
+![image](https://github.com/user-attachments/assets/fa9299f3-52d9-47b7-8d18-94f21636e45d)
+![image](https://github.com/user-attachments/assets/aaa83b47-cc8b-4891-9897-67f069beea60)
+![image](https://github.com/user-attachments/assets/82f2d629-b2e7-4f2b-9094-f1840a47bcad)
+![image](https://github.com/user-attachments/assets/1d98ad52-0936-4126-84d2-4d7857fa500e)
+![image](https://github.com/user-attachments/assets/74f722a1-fc6a-463f-a572-215b72fd30e9)
+![image](https://github.com/user-attachments/assets/ca2ee285-cfd6-4370-a76b-d5626e308b93)
+![image](https://github.com/user-attachments/assets/7a788efa-dd71-4a50-b415-c8a9f65439a6)
+![image](https://github.com/user-attachments/assets/30db12ce-05d2-4f29-a466-306dca4f21a7)
+![image](https://github.com/user-attachments/assets/2ece4021-9d21-4d86-abeb-52b8ab2d61f1)
+
+
+

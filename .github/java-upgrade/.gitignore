@@ -1,7 +1,2 @@
-# archivos sensibles
-.env
-.claude
 
-# sistema
-.DS_Store
-node_modules/
+**/*

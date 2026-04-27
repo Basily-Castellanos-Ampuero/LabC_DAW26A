@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>03 — Día de Arequipa</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="index.html" class="back-btn">← Volver</a>
+
+  <div class="container-main">
+    <div class="page-tag">// 03</div>
+    <h1>Día de <em>Arequipa</em></h1>
+    <p class="subtitle">15 de agosto · Fundación española de la Ciudad Blanca</p>
+
+    <div class="celebration" id="celebration">!!</div>
+
+    <div class="today-badge" id="todayBadge">Cargando fecha...</div>
+
+    <div class="countdown-grid" id="countdownGrid">
+      <div class="count-block" id="cb-months">
+        <div class="count-num" id="months">--</div>
+        <div class="count-label">Meses</div>
+      </div>
+      <div class="count-block" id="cb-days">
+        <div class="count-num" id="days">--</div>
+        <div class="count-label">Días</div>
+      </div>
+      <div class="count-block" id="cb-hours">
+        <div class="count-num" id="hours">--</div>
+        <div class="count-label">Horas</div>
+      </div>
+      <div class="count-block" id="cb-mins">
+        <div class="count-num" id="mins">--</div>
+        <div class="count-label">Minutos</div>
+      </div>
+      <div class="count-block" id="cb-secs">
+        <div class="count-num" id="secs">--</div>
+        <div class="count-label">Segundos</div>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <div class="date-row">
+        <div class="date-item">
+          <div class="label">Hoy</div>
+          <div class="value" id="todayFull">—</div>
+        </div>
+        <div class="divider"></div>
+        <div class="date-item">
+          <div class="label">Días totales faltan</div>
+          <div class="value" id="totalDays" style="color:var(--accent)">—</div>
+        </div>
+        <div class="divider"></div>
+        <div class="date-item">
+          <div class="label">Próximo aniversario</div>
+          <div class="value" id="anniversaryYear">—</div>
+        </div>
+      </div>
+      <div class="progress-bar-wrap" style="margin-top:24px">
+        <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+      </div>
+      <div class="year-label" id="progressLabel"></div>
+    </div>
+  </div>
+
+  <script>
+    const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+    function getNextArequipaDay() {
+      const now = new Date();
+      let year = now.getFullYear();
+      let target = new Date(year, 7, 15, 0, 0, 0); // Aug 15
+      if (now >= target) target = new Date(year + 1, 7, 15, 0, 0, 0);
+      return target;
+    }
+
+    function getDaysUntil(target) {
+      const now = new Date();
+      const diff = target - now;
+      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function update() {
+      const now = new Date();
+      const target = getNextArequipaDay();
+      const diff = target - now;
+
+      const isToday = now.getMonth() === 7 && now.getDate() === 15;
+
+      document.getElementById('todayBadge').textContent =
+        `Hoy: ${now.getDate()} de ${MONTHS[now.getMonth()]} de ${now.getFullYear()}`;
+
+      document.getElementById('todayFull').textContent =
+        `${now.getDate()}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+
+      document.getElementById('anniversaryYear').textContent = target.getFullYear();
+
+      if (isToday) {
+        document.getElementById('celebration').style.display = 'block';
+        document.getElementById('days').textContent = 'HOY!';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('mins').textContent = '00';
+        document.getElementById('secs').textContent = '00';
+        document.getElementById('months').textContent = '00';
+        document.getElementById('totalDays').textContent = 'Es hoy!';
+        return;
+      }
+
+      const totalSecs = Math.floor(diff / 1000);
+      const secs = totalSecs % 60;
+      const totalMins = Math.floor(totalSecs / 60);
+      const mins = totalMins % 60;
+      const totalHours = Math.floor(totalMins / 60);
+      const hours = totalHours % 24;
+      const totalDays = Math.floor(totalHours / 24);
+      const months = Math.floor(totalDays / 30);
+
+      document.getElementById('months').textContent = String(months).padStart(2,'0');
+      document.getElementById('days').textContent = String(totalDays % 30).padStart(2,'0');
+      document.getElementById('hours').textContent = String(hours).padStart(2,'0');
+      document.getElementById('mins').textContent = String(mins).padStart(2,'0');
+      document.getElementById('secs').textContent = String(secs).padStart(2,'0');
+      document.getElementById('totalDays').textContent = totalDays + ' días';
+
+      // Progress through year
+      const yearStart = new Date(now.getFullYear(), 0, 1);
+      const yearEnd = new Date(now.getFullYear() + 1, 0, 1);
+      const progress = ((now - yearStart) / (yearEnd - yearStart)) * 100;
+      document.getElementById('progressBar').style.width = progress.toFixed(1) + '%';
+      document.getElementById('progressLabel').textContent = `${progress.toFixed(1)}% del año ${now.getFullYear()} transcurrido`;
+
+      // Activate blocks
+      ['cb-months','cb-days','cb-hours','cb-mins','cb-secs'].forEach(id => {
+        document.getElementById(id).classList.add('active');
+      });
+    }
+
+    update();
+    setInterval(update, 1000);
+  </script>
+</body>
+</html>

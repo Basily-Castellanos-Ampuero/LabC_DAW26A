@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>05 — Suma de Tabla</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="index.html" class="back-btn">← Volver</a>
+
+  <div class="container-main">
+    <div class="page-tag">// 05</div>
+    <h1>Suma de Tabla</h1>
+    <p class="subtitle">Genera una tabla aleatoria dinámica y calcula su suma total</p>
+
+    <!-- Step 1: Config form -->
+    <div class="panel">
+      <div style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px;">// Paso 1 — Configurar tabla</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Filas</label>
+          <input type="number" id="rowsInput" min="1" max="20" value="4" placeholder="1-20"/>
+        </div>
+        <div class="form-group">
+          <label>Columnas</label>
+          <input type="number" id="colsInput" min="1" max="10" value="5" placeholder="1-10"/>
+        </div>
+        <div class="form-group">
+          <label>Valor mínimo</label>
+          <input type="number" id="minVal" value="1"/>
+        </div>
+        <div class="form-group">
+          <label>Valor máximo</label>
+          <input type="number" id="maxVal" value="100"/>
+        </div>
+        <button class="btn-gen" onclick="generateTable()"> Generar tabla</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Table display -->
+    <div class="panel" id="tablePanel" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <div style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;">// Paso 2 — Tabla generada</div>
+        <div class="range-info" id="rangeInfo"></div>
+      </div>
+      <div class="table-wrapper">
+        <table id="dataTable"></table>
+      </div>
+      <button class="btn-sum" onclick="calculateSum()">∑ Calcular suma total</button>
+    </div>
+
+    <!-- Result -->
+    <div class="result-big" id="resultBig">
+      <div class="label">Suma total de todos los valores</div>
+      <div class="value" id="resultValue">0</div>
+      <div class="stats-row">
+        <div class="stat"><div class="sv" id="statCount">0</div><div class="sl">Valores</div></div>
+        <div class="stat"><div class="sv" id="statAvg">0</div><div class="sl">Promedio</div></div>
+        <div class="stat"><div class="sv" id="statMin">0</div><div class="sl">Mínimo</div></div>
+        <div class="stat"><div class="sv" id="statMax">0</div><div class="sl">Máximo</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let tableData = [];
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function generateTable() {
+      const rows = parseInt(document.getElementById('rowsInput').value) || 4;
+      const cols = parseInt(document.getElementById('colsInput').value) || 5;
+      const min = parseInt(document.getElementById('minVal').value) || 1;
+      const max = parseInt(document.getElementById('maxVal').value) || 100;
+
+      if (rows < 1 || rows > 20 || cols < 1 || cols > 10) { alert('Filas: 1-20, Columnas: 1-10'); return; }
+      if (min >= max) { alert('El mínimo debe ser menor al máximo'); return; }
+
+      tableData = [];
+      for (let r = 0; r < rows; r++) {
+        tableData[r] = [];
+        for (let c = 0; c < cols; c++) {
+          tableData[r][c] = randInt(min, max);
+        }
+      }
+
+      renderTable(rows, cols);
+      document.getElementById('rangeInfo').innerHTML = `Valores entre <span>${min}</span> y <span>${max}</span> — ${rows}×${cols} = <span>${rows*cols} celdas</span>`;
+      document.getElementById('tablePanel').style.display = 'block';
+      document.getElementById('resultBig').classList.remove('show');
+
+      // Animate in
+      document.getElementById('tablePanel').style.opacity = '0';
+      requestAnimationFrame(() => {
+        document.getElementById('tablePanel').style.transition = 'opacity .4s';
+        document.getElementById('tablePanel').style.opacity = '1';
+      });
+    }
+
+    function renderTable(rows, cols) {
+      const table = document.getElementById('dataTable');
+      table.innerHTML = '';
+      // Header
+      const thead = document.createElement('thead');
+      const hrow = document.createElement('tr');
+      hrow.innerHTML = '<th>#</th>';
+      for (let c = 0; c < cols; c++) hrow.innerHTML += `<th>Col ${c+1}</th>`;
+      hrow.innerHTML += '<th>Fila Σ</th>';
+      thead.appendChild(hrow);
+      table.appendChild(thead);
+      // Body
+      const tbody = document.createElement('tbody');
+      for (let r = 0; r < rows; r++) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td style="color:var(--muted);font-size:.72rem">F${r+1}</td>`;
+        let rowSum = 0;
+        for (let c = 0; c < cols; c++) {
+          const val = tableData[r][c];
+          rowSum += val;
+          tr.innerHTML += `<td>${val}</td>`;
+        }
+        tr.innerHTML += `<td class="row-sum">${rowSum}</td>`;
+        tbody.appendChild(tr);
+      }
+      // Col totals row
+      const totalRow = document.createElement('tr');
+      totalRow.innerHTML = `<td style="color:var(--muted);font-size:.72rem">Σ</td>`;
+      let grandTotal = 0;
+      for (let c = 0; c < cols; c++) {
+        let colSum = 0;
+        for (let r = 0; r < rows; r++) colSum += tableData[r][c];
+        grandTotal += colSum;
+        totalRow.innerHTML += `<td class="col-total">${colSum}</td>`;
+      }
+      totalRow.innerHTML += `<td class="col-total" style="color:var(--accent);font-size:1rem">—</td>`;
+      tbody.appendChild(totalRow);
+      table.appendChild(tbody);
+    }
+
+    function calculateSum() {
+      if (!tableData.length) return;
+      let sum = 0, min = Infinity, max = -Infinity, count = 0;
+      for (const row of tableData) {
+        for (const val of row) {
+          sum += val; count++;
+          if (val < min) min = val;
+          if (val > max) max = val;
+        }
+      }
+      // Highlight all cells
+      const cells = document.querySelectorAll('#dataTable tbody td:not(.col-total):not(.row-sum)');
+      cells.forEach((td, i) => {
+        setTimeout(() => td.classList.add('highlighted'), i * 20);
+      });
+      document.getElementById('resultValue').textContent = sum;
+      document.getElementById('statCount').textContent = count;
+      document.getElementById('statAvg').textContent = (sum/count).toFixed(2);
+      document.getElementById('statMin').textContent = min;
+      document.getElementById('statMax').textContent = max;
+      const rb = document.getElementById('resultBig');
+      rb.classList.remove('show');
+      void rb.offsetWidth;
+      rb.classList.add('show');
+    }
+  </script>
+</body>
+</html>

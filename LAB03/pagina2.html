@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>06b — Calculadora Avanzada</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="index.html" class="back-btn">← Volver</a>
+
+  <div class="container-main">
+    <div class="page-tag">// 06b — Pagina2.html</div>
+    <h1>Calculadora Avanzada</h1>
+    <p class="subtitle">Operaciones aritméticas, lógicas y de bits con dos argumentos</p>
+
+    <!-- Category tabs -->
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="setCategory('aritmetica', this)">Aritmética</button>
+      <button class="tab-btn" onclick="setCategory('logica', this)">Lógica</button>
+      <button class="tab-btn" onclick="setCategory('bits', this)">Bits</button>
+    </div>
+
+    <!-- Operator picker -->
+    <div class="panel">
+      <div class="panel-title">// Selecciona un operador</div>
+      <div class="op-grid" id="opGrid"></div>
+      <div class="op-desc" id="opDesc">Selecciona un operador para ver su descripción</div>
+    </div>
+
+    <!-- Inputs -->
+    <div class="panel">
+      <div class="panel-title">// Argumentos</div>
+      <div class="inputs-row">
+        <input type="number" class="num-input" id="argA" placeholder="A" value="10"/>
+        <div class="op-display" id="opSymbol">?</div>
+        <input type="number" class="num-input" id="argB" placeholder="B" value="3"/>
+      </div>
+      <p class="note" id="intNote" style="display:none">⚠ Los operadores de bits trabajan con enteros de 32 bits.</p>
+      <div class="error-box" id="errorBox"></div>
+      <button class="btn-calc" onclick="calculate()">= Calcular</button>
+      <div class="result-box" id="resultBox">
+        <div class="result-expr" id="resultExpr"></div>
+        <div class="result-val" id="resultVal"></div>
+        <div class="result-type" id="resultType"></div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-list" id="historyList" style="display:none">
+      <div class="history-title">// Historial</div>
+      <div id="historyItems"></div>
+    </div>
+  </div>
+
+  <script>
+    const OPERATORS = {
+      aritmetica: [
+        { sym: '+', label: '+', desc: 'Suma: A + B' },
+        { sym: '-', label: '−', desc: 'Resta: A − B' },
+        { sym: '*', label: '×', desc: 'Multiplicación: A × B' },
+        { sym: '/', label: '÷', desc: 'División: A ÷ B (B ≠ 0)' },
+        { sym: '%', label: '%', desc: 'Módulo: residuo de A ÷ B' },
+        { sym: '**', label: 'Aⁿ', desc: 'Potencia: A elevado a B' },
+        { sym: 'sqrt', label: '√A', desc: 'Raíz cuadrada de A (ignora B)' },
+        { sym: 'abs', label: '|A|', desc: 'Valor absoluto de A (ignora B)' },
+      ],
+      logica: [
+        { sym: '&&', label: 'AND', desc: 'A && B — verdadero si ambos son verdaderos' },
+        { sym: '||', label: 'OR', desc: 'A || B — verdadero si alguno es verdadero' },
+        { sym: '!', label: '!A', desc: 'NOT A — negación lógica de A (ignora B)' },
+        { sym: '==', label: '==', desc: 'Igualdad: A == B' },
+        { sym: '!=', label: '!=', desc: 'Desigualdad: A != B' },
+        { sym: '>', label: '>', desc: 'Mayor que: A > B' },
+        { sym: '<', label: '<', desc: 'Menor que: A < B' },
+        { sym: '>=', label: '≥', desc: 'Mayor o igual: A >= B' },
+        { sym: '<=', label: '≤', desc: 'Menor o igual: A <= B' },
+      ],
+      bits: [
+        { sym: '&', label: 'AND&', desc: 'AND bit a bit: A & B' },
+        { sym: '|', label: 'OR|', desc: 'OR bit a bit: A | B' },
+        { sym: '^', label: 'XOR^', desc: 'XOR bit a bit: A ^ B' },
+        { sym: '~', label: '~A', desc: 'NOT bit a bit: ~A (complemento de A, ignora B)' },
+        { sym: '<<', label: '<<', desc: 'Desplazamiento izquierda: A << B' },
+        { sym: '>>', label: '>>', desc: 'Desplazamiento derecha: A >> B' },
+        { sym: '>>>', label: '>>>', desc: 'Desplazamiento derecha sin signo: A >>> B' },
+      ]
+    };
+
+    let currentCategory = 'aritmetica';
+    let selectedOp = null;
+    const history = [];
+
+    function setCategory(cat, el) {
+      currentCategory = cat;
+      selectedOp = null;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('opSymbol').textContent = '?';
+      document.getElementById('opDesc').textContent = 'Selecciona un operador para ver su descripción';
+      document.getElementById('resultBox').classList.remove('show');
+      document.getElementById('errorBox').style.display = 'none';
+      document.getElementById('intNote').style.display = cat === 'bits' ? 'block' : 'none';
+      renderOps();
+    }
+
+    function renderOps() {
+      const grid = document.getElementById('opGrid');
+      grid.innerHTML = '';
+      OPERATORS[currentCategory].forEach(op => {
+        const btn = document.createElement('button');
+        btn.className = 'op-btn';
+        btn.textContent = op.label;
+        btn.onclick = () => selectOp(op, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function selectOp(op, el) {
+      selectedOp = op;
+      document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('opSymbol').textContent = op.label;
+      document.getElementById('opDesc').textContent = op.desc;
+      document.getElementById('resultBox').classList.remove('show');
+      document.getElementById('errorBox').style.display = 'none';
+    }
+
+    function calculate() {
+      const errBox = document.getElementById('errorBox');
+      errBox.style.display = 'none';
+      if (!selectedOp) { errBox.textContent = 'Por favor selecciona un operador primero.'; errBox.style.display = 'block'; return; }
+      const a = parseFloat(document.getElementById('argA').value);
+      const b = parseFloat(document.getElementById('argB').value);
+      if (isNaN(a)) { errBox.textContent = 'El valor de A no es un número válido.'; errBox.style.display = 'block'; return; }
+
+      let result, expr, typeNote = '';
+      const sym = selectedOp.sym;
+
+      try {
+        switch (sym) {
+          case '+': result = a + b; expr = `${a} + ${b}`; break;
+          case '-': result = a - b; expr = `${a} − ${b}`; break;
+          case '*': result = a * b; expr = `${a} × ${b}`; break;
+          case '/':
+            if (b === 0) throw new Error('División por cero no permitida.');
+            result = a / b; expr = `${a} ÷ ${b}`; break;
+          case '%':
+            if (b === 0) throw new Error('Módulo por cero no permitido.');
+            result = a % b; expr = `${a} % ${b}`; break;
+          case '**': result = Math.pow(a, b); expr = `${a} ^ ${b}`; break;
+          case 'sqrt': result = Math.sqrt(a); expr = `√${a}`; break;
+          case 'abs': result = Math.abs(a); expr = `|${a}|`; break;
+          case '&&': result = !!(a && b); expr = `${a} && ${b}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '||': result = !!(a || b); expr = `${a} || ${b}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '!': result = !a; expr = `!${a}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '==': result = a == b; expr = `${a} == ${b}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '!=': result = a != b; expr = `${a} != ${b}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '>': result = a > b; expr = `${a} > ${b}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '<': result = a < b; expr = `${a} < ${b}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '>=': result = a >= b; expr = `${a} >= ${b}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '<=': result = a <= b; expr = `${a} <= ${b}`; typeNote = 'Resultado lógico (booleano)'; break;
+          case '&': result = (a|0) & (b|0); expr = `${a|0} & ${b|0}`; typeNote = `Binario A: ${(a|0).toString(2)} | Binario B: ${(b|0).toString(2)} | Resultado: ${result.toString(2)}`; break;
+          case '|': result = (a|0) | (b|0); expr = `${a|0} | ${b|0}`; typeNote = `Binario: ${result.toString(2)}`; break;
+          case '^': result = (a|0) ^ (b|0); expr = `${a|0} ^ ${b|0}`; typeNote = `Binario: ${result.toString(2)}`; break;
+          case '~': result = ~(a|0); expr = `~${a|0}`; typeNote = `Binario: ${result.toString(2)}`; break;
+          case '<<': result = (a|0) << (b|0); expr = `${a|0} << ${b|0}`; typeNote = `Binario: ${result.toString(2)}`; break;
+          case '>>': result = (a|0) >> (b|0); expr = `${a|0} >> ${b|0}`; typeNote = `Binario: ${result.toString(2)}`; break;
+          case '>>>': result = (a>>>0) >>> (b|0); expr = `${a>>>0} >>> ${b|0}`; typeNote = `Binario: ${result.toString(2)}`; break;
+          default: throw new Error('Operador desconocido.');
+        }
+      } catch(e) {
+        errBox.textContent = e.message; errBox.style.display = 'block'; return;
+      }
+
+      const display = (typeof result === 'boolean') ? result.toString() : (Number.isFinite(result) ? +result.toFixed(10) : result);
+      document.getElementById('resultExpr').textContent = expr + ' =';
+      document.getElementById('resultVal').textContent = display;
+      document.getElementById('resultType').textContent = typeNote;
+      const rb = document.getElementById('resultBox');
+      rb.classList.remove('show');
+      void rb.offsetWidth;
+      rb.classList.add('show');
+
+      // History
+      history.unshift({ expr, result: display });
+      if (history.length > 8) history.pop();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      const items = document.getElementById('historyItems');
+      if (!history.length) { list.style.display = 'none'; return; }
+      list.style.display = 'block';
+      items.innerHTML = '';
+      history.forEach(h => {
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `<span>${h.expr}</span><span class="res">= ${h.result}</span>`;
+        items.appendChild(div);
+      });
+    }
+
+    // Init
+    renderOps();
+    document.addEventListener('keydown', e => { if(e.key==='Enter') calculate(); });
+  </script>
+</body>
+</html>

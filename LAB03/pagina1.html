@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>06a — Tamaño y Color de Texto</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="index.html" class="back-btn">← Volver</a>
+
+  <div class="container-main">
+    <div class="page-tag">// 06a — Pagina1.html</div>
+    <h1>Tamaño &amp; Color</h1>
+    <p class="subtitle">Controla el tamaño y color del texto en tiempo real</p>
+
+    <!-- Display -->
+    <div class="display-panel">
+      <div id="demoText">¡Hola, Arequipa!</div>
+    </div>
+
+    <!-- Text input -->
+    <div class="text-input-row">
+      <input type="text" id="textInput" placeholder="Escribe tu texto aquí..." value="¡Hola, Arequipa!"/>
+      <button class="btn-update" onclick="updateText()">Actualizar</button>
+    </div>
+
+    <div style="margin-top:24px"></div>
+
+    <!-- Controls -->
+    <div class="controls-grid">
+      <!-- Size controls -->
+      <div class="control-card">
+        <div class="control-title">// Tamaño de letra</div>
+        <div class="btn-group-custom">
+          <button class="ctrl-btn" onclick="changeSize(-4)">A−</button>
+          <button class="ctrl-btn" onclick="changeSize(-2)">a−</button>
+          <button class="ctrl-btn" onclick="changeSize(2)">a+</button>
+          <button class="ctrl-btn" onclick="changeSize(4)">A+</button>
+        </div>
+        <div class="size-display">Tamaño actual: <span id="sizeVal">32</span>px</div>
+        <div style="margin-top:12px">
+          <input type="range" class="form-range" id="sizeRange" min="8" max="120" value="32"
+            oninput="setSize(this.value)"
+            style="accent-color:var(--accent)"/>
+        </div>
+      </div>
+      <!-- Color controls -->
+      <div class="control-card">
+        <div class="control-title">// Color de texto</div>
+        <div class="color-grid" id="colorGrid"></div>
+      </div>
+    </div>
+
+    <button class="btn-reset" onclick="resetAll()">↺ Restablecer valores por defecto</button>
+  </div>
+
+  <script>
+    const COLORS = [
+      '#f08040','#f0c040','#40f0a0','#40c0f0','#c040f0',
+      '#f04080','#ffffff','#a0a0c0','#ff6060','#60ff60',
+    ];
+    let currentSize = 32;
+    const DEFAULT_COLOR = '#f08040';
+    const DEFAULT_TEXT = '¡Hola, Arequipa!';
+    const MIN_SIZE = 8, MAX_SIZE = 120;
+
+    function buildColorGrid() {
+      const grid = document.getElementById('colorGrid');
+      COLORS.forEach((c, i) => {
+        const sw = document.createElement('div');
+        sw.className = 'color-swatch' + (c === DEFAULT_COLOR ? ' active' : '');
+        sw.style.background = c;
+        sw.title = c;
+        sw.onclick = () => setColor(c, sw);
+        grid.appendChild(sw);
+      });
+    }
+
+    function setColor(color, el) {
+      document.getElementById('demoText').style.color = color;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      if (el) el.classList.add('active');
+    }
+
+    function changeSize(delta) {
+      currentSize = Math.min(MAX_SIZE, Math.max(MIN_SIZE, currentSize + delta));
+      applySize();
+    }
+
+    function setSize(val) {
+      currentSize = parseInt(val);
+      applySize();
+    }
+
+    function applySize() {
+      document.getElementById('demoText').style.fontSize = currentSize + 'px';
+      document.getElementById('sizeVal').textContent = currentSize;
+      document.getElementById('sizeRange').value = currentSize;
+    }
+
+    function updateText() {
+      const val = document.getElementById('textInput').value.trim();
+      if (val) document.getElementById('demoText').textContent = val;
+    }
+
+    function resetAll() {
+      currentSize = 32;
+      applySize();
+      document.getElementById('demoText').style.color = DEFAULT_COLOR;
+      document.getElementById('demoText').textContent = DEFAULT_TEXT;
+      document.getElementById('textInput').value = DEFAULT_TEXT;
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      document.querySelector('.color-swatch').classList.add('active');
+    }
+
+    document.getElementById('textInput').addEventListener('keydown', e => { if(e.key==='Enter') updateText(); });
+    buildColorGrid();
+  </script>
+</body>
+</html>

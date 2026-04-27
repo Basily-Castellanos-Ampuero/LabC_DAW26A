@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>01 — Día de la Semana</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="index.html" class="back-btn">← Volver</a>
+
+  <div class="container-main">
+    <div class="page-tag">// 01</div>
+    <h1>Día de la Semana</h1>
+    <p class="subtitle">Ingresa un número del 0 al 6 y obtén el nombre del día</p>
+
+    <div class="panel">
+      <label>Número del día (0 = Domingo → 6 = Sábado)</label>
+      <div class="input-row">
+        <input type="number" id="dayInput" min="0" max="6" placeholder="0 – 6" />
+        <button class="btn-go" onclick="getDayName()">Consultar</button>
+      </div>
+      <div class="day-grid" id="dayGrid"></div>
+    </div>
+
+    <div class="result-box" id="resultBox">
+      <div class="result-num" id="resultNum"></div>
+      <div class="result-day" id="resultDay"></div>
+      <div class="today-info">
+        Hoy es <span id="todayDay"></span> — número <span id="todayNum"></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DAYS = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+    const SHORT = ["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"];
+
+    function getDayOfWeek(num) {
+      if (num < 0 || num > 6) return null;
+      return DAYS[num];
+    }
+
+    function buildGrid(active) {
+      const grid = document.getElementById('dayGrid');
+      grid.innerHTML = '';
+      DAYS.forEach((d, i) => {
+        const pill = document.createElement('div');
+        pill.className = 'day-pill' + (i === active ? ' active' : '');
+        pill.innerHTML = `${SHORT[i]}<span>${i}</span>`;
+        grid.appendChild(pill);
+      });
+    }
+
+    function getDayName() {
+      const val = parseInt(document.getElementById('dayInput').value);
+      const result = getDayOfWeek(val);
+      const box = document.getElementById('resultBox');
+      if (result === null || isNaN(val)) {
+        alert('Por favor ingresa un número válido entre 0 y 6.');
+        return;
+      }
+      document.getElementById('resultNum').textContent = `Número ${val}`;
+      document.getElementById('resultDay').textContent = result;
+      const today = new Date().getDay();
+      document.getElementById('todayDay').textContent = DAYS[today];
+      document.getElementById('todayNum').textContent = today;
+      buildGrid(val);
+      box.classList.remove('show');
+      void box.offsetWidth;
+      box.classList.add('show');
+    }
+
+    // Init grid with today
+    buildGrid(new Date().getDay());
+
+    // Enter key support
+    document.getElementById('dayInput').addEventListener('keydown', e => { if(e.key === 'Enter') getDayName(); });
+  </script>
+</body>
+</html>

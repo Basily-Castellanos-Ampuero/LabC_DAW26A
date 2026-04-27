@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>02 — Texto Invertido</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a href="index.html" class="back-btn">← Volver</a>
+
+  <div class="container-main">
+    <div class="page-tag">// 02</div>
+    <h1>Texto Invertido</h1>
+    <p class="subtitle">Escribe un texto y presiona el botón para verlo al revés</p>
+
+    <div class="cols">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-dot"></span><span class="panel-title">Texto original</span></div>
+        <textarea id="inputText" placeholder="Escribe aquí...&#10;Ej: Hola Mundo"></textarea>
+        <div class="stats-row">
+          <span>Chars: <span class="stat-val" id="charCount">0</span></span>
+          <span>Palabras: <span class="stat-val" id="wordCount">0</span></span>
+        </div>
+      </div>
+
+      <div class="arrow-col">⇄</div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-dot" style="background:#40c0f0"></span><span class="panel-title">Texto invertido</span></div>
+        <div class="result-area" id="resultDiv">Aquí aparecerá el resultado...</div>
+        <div class="stats-row">
+          <span id="reversedLabel" style="color:var(--muted)">— —</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-clear" onclick="clearAll()">Limpiar</button>
+      <button class="btn-invert" onclick="invertText()">⇄ Invertir texto</button>
+    </div>
+  </div>
+
+  <script>
+    function invertText() {
+      const text = document.getElementById('inputText').value;
+      if (!text.trim()) { alert('Por favor escribe algo primero.'); return; }
+      const reversed = text.split('').reverse().join('');
+      const div = document.getElementById('resultDiv');
+      div.textContent = reversed;
+      div.classList.add('has-content');
+      document.getElementById('reversedLabel').innerHTML = `Invertido: <span class="stat-val">${reversed.length} chars</span>`;
+      // Animate
+      div.style.opacity = '0';
+      div.style.transform = 'translateX(10px)';
+      requestAnimationFrame(() => {
+        div.style.transition = 'opacity .3s, transform .3s';
+        div.style.opacity = '1';
+        div.style.transform = 'translateX(0)';
+      });
+    }
+
+    function clearAll() {
+      document.getElementById('inputText').value = '';
+      document.getElementById('resultDiv').textContent = 'Aquí aparecerá el resultado...';
+      document.getElementById('resultDiv').classList.remove('has-content');
+      document.getElementById('charCount').textContent = '0';
+      document.getElementById('wordCount').textContent = '0';
+      document.getElementById('reversedLabel').textContent = '— —';
+    }
+
+    document.getElementById('inputText').addEventListener('input', function() {
+      const val = this.value;
+      document.getElementById('charCount').textContent = val.length;
+      document.getElementById('wordCount').textContent = val.trim() ? val.trim().split(/\s+/).length : 0;
+    });
+  </script>
+</body>
+</html>

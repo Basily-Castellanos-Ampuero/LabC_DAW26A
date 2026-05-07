@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown Navigator · Lab 04</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+  /* ===== Variables ===== */
+  :root {
+    --bg: #121212;
+    --panel: #1e1e1e;
+    --border: #2c2c2c;
+
+    --text: #f5f5f5;
+    --text-muted: #999;
+
+    --primary: #d6b36a;
+    --danger: #ff6b6b;
+    --success: #4cd97b;
+
+    --radius: 8px;
+    --sidebar-width: 260px;
+
+    --font-main: Arial, sans-serif;
+    --font-mono: monospace;
+  }
+
+  /* ===== Reset ===== */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-main);
+  }
+
+  /* ===== Layout ===== */
+  .app {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: 60px 1fr;
+    height: 100vh;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    grid-column: 1 / -1;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-title {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-top {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .file-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+  }
+
+  .file-item {
+    padding: 10px;
+    margin-bottom: 8px;
+
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .file-item:hover,
+  .file-item.active {
+    background: #252525;
+    border-color: var(--primary);
+  }
+
+  .file-name {
+    font-size: 14px;
+  }
+
+  .file-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ===== Main ===== */
+  .main {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view {
+    display: none;
+    flex: 1;
+  }
+
+  .view.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== Buttons ===== */
+  button {
+    border: none;
+    border-radius: var(--radius);
+    padding: 10px 16px;
+
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #000;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--primary);
+  }
+
+  /* ===== Reader ===== */
+  .reader-topbar {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+
+  .reader-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px;
+  }
+
+  /* ===== Markdown ===== */
+  .md-html h1,
+  .md-html h2,
+  .md-html h3 {
+    margin-bottom: 16px;
+    margin-top: 32px;
+  }
+
+  .md-html p {
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .md-html a {
+    color: var(--primary);
+  }
+
+  .md-html code {
+    background: #222;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+  }
+
+  .md-html pre {
+    background: #1b1b1b;
+    padding: 16px;
+    border-radius: var(--radius);
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+
+  .md-html blockquote {
+    border-left: 4px solid var(--primary);
+    padding-left: 12px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  /* ===== Forms ===== */
+  .create-inner {
+    max-width: 700px;
+    margin: auto;
+    padding: 40px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: 12px;
+
+    background: #1b1b1b;
+    color: var(--text);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .form-textarea {
+    min-height: 250px;
+    resize: vertical;
+  }
+
+  /* ===== Toast ===== */
+  .toast-wrap {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    background: var(--panel);
+    border-left: 4px solid var(--primary);
+  }
+
+  .toast.ok {
+    border-color: var(--success);
+  }
+
+  .toast.err {
+    border-color: var(--danger);
+  }
+
+  /* ===== Spinner ===== */
+  .spinner {
+    width: 16px;
+    height: 16px;
+
+    border: 2px solid #444;
+    border-top-color: var(--primary);
+
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ===== Scrollbar ===== */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <span class="header-logo">◆ DAW</span>
+    <span class="header-title">Markdown Navigator</span>
+    <span class="header-sep"></span>
+    <span class="header-badge">Lab 04 · Ajax + NodeJS</span>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-label">Archivos</div>
+      <button class="btn-new" id="btn-show-create">
+        <span>＋</span> Nuevo archivo
+      </button>
+    </div>
+    <div class="file-list" id="file-list">
+      <div class="loading-row">
+        <span class="spinner"></span> Cargando archivos…
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Welcome View -->
+    <div class="view active" id="view-welcome">
+      <div class="welcome-icon">📄</div>
+      <div class="welcome-title">Selecciona un archivo</div>
+      <div class="welcome-sub">O crea uno nuevo desde el panel lateral</div>
+    </div>
+
+    <!-- Reader View -->
+    <div class="view" id="view-reader">
+      <div class="reader-topbar">
+        <span class="reader-filename" id="reader-filename">—</span>
+        <span class="reader-sep"></span>
+        <button class="btn-toggle on" id="btn-html" title="Vista renderizada">HTML</button>
+        <button class="btn-toggle" id="btn-raw"  title="Código fuente">RAW</button>
+      </div>
+      <div class="reader-body">
+        <div class="reader-pane active md-html" id="pane-html"></div>
+        <div class="reader-pane md-raw"         id="pane-raw"></div>
+      </div>
+    </div>
+
+    <!-- Create View -->
+    <div class="view" id="view-create">
+      <div class="create-inner">
+        <div class="create-heading">Nuevo archivo Markdown</div>
+        <div class="create-sub">El archivo se almacenará en el servidor vía petición POST · JSON</div>
+
+        <div class="form-group">
+          <label class="form-label" for="new-name">Nombre del archivo</label>
+          <input
+            class="form-input"
+            type="text"
+            id="new-name"
+            placeholder="mi-documento"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="form-hint">La extensión .md se añade automáticamente</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="new-content">Contenido Markdown</label>
+          <textarea
+            class="form-input form-textarea"
+            id="new-content"
+            placeholder="# Mi documento&#10;&#10;Escribe tu contenido aquí..."
+            spellcheck="false"
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-submit" id="btn-create">Guardar archivo</button>
+          <button class="btn-cancel" id="btn-cancel-create">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// Configuración
+// ═══════════════════════════════════════════════════════════════════════════
+const API_BASE = '/lab03/api';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Utilidades
+// ═══════════════════════════════════════════════════════════════════════════
+
+/** Muestra una vista y oculta el resto */
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/** Toast de notificación */
+function toast(msg, type = 'info', duration = 3500) {
+  const wrap = document.getElementById('toast-wrap');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => el.classList.add('show'));
+  });
+  setTimeout(() => {
+    el.classList.add('hide');
+    el.addEventListener('transitionend', () => el.remove());
+  }, duration);
+}
+
+/** Formatea bytes a unidad legible */
+function fmtSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  return (bytes / 1024).toFixed(1) + ' KB';
+}
+
+/** Formatea fecha ISO a fecha local corta */
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: '2-digit' });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Estado de la aplicación
+// ═══════════════════════════════════════════════════════════════════════════
+let currentFile = null;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// API AJAX — todas las comunicaciones son JSON
+// ═══════════════════════════════════════════════════════════════════════════
+
+/** GET /api/files — lista todos los archivos Markdown */
+async function fetchFiles() {
+  const res = await fetch(`${API_BASE}/files`);
+  if (!res.ok) throw new Error(`Error ${res.status}`);
+  return res.json(); // { files: [...] }
+}
+
+/** GET /api/files/:name — obtiene contenido de un archivo */
+async function fetchFile(name) {
+  const res = await fetch(`${API_BASE}/files/${encodeURIComponent(name)}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: `Error ${res.status}` }));
+    throw new Error(err.error || `Error ${res.status}`);
+  }
+  return res.json(); // { name, raw, html }
+}
+
+/** POST /api/files — crea un nuevo archivo Markdown */
+async function createFile(name, content) {
+  const res = await fetch(`${API_BASE}/files`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, content }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
+  return data; // { success, name, message }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Renderizado de la lista de archivos
+// ═══════════════════════════════════════════════════════════════════════════
+async function loadFileList() {
+  const list = document.getElementById('file-list');
+  list.innerHTML = '<div class="loading-row"><span class="spinner"></span> Cargando…</div>';
+
+  try {
+    const { files } = await fetchFiles();
+
+    if (files.length === 0) {
+      list.innerHTML = '<div class="file-list-empty">Sin archivos .md<br>Crea el primero →</div>';
+      return;
+    }
+
+    list.innerHTML = '';
+    files.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      item.dataset.name = f.name;
+      item.innerHTML = `
+        <span class="file-name">${escapeHtml(f.name)}</span>
+        <span class="file-meta">${fmtDate(f.modified)} · ${fmtSize(f.size)}</span>
+      `;
+      item.addEventListener('click', () => openFile(f.name, item));
+      list.appendChild(item);
+    });
+
+    // Restaurar selección activa
+    if (currentFile) {
+      const active = list.querySelector(`[data-name="${CSS.escape(currentFile)}"]`);
+      if (active) active.classList.add('active');
+    }
+
+  } catch (err) {
+    list.innerHTML = '<div class="file-list-empty">Error cargando archivos</div>';
+    toast('No se pudo cargar la lista: ' + err.message, 'err');
+  }
+}
+
+/** Escapa HTML para evitar XSS en nombres de archivo */
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Abrir y mostrar un archivo
+// ═══════════════════════════════════════════════════════════════════════════
+async function openFile(name, itemEl) {
+  // Marcar activo en sidebar
+  document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+  if (itemEl) itemEl.classList.add('active');
+  currentFile = name;
+
+  // Mostrar vista de lectura con spinner
+  showView('view-reader');
+  document.getElementById('reader-filename').textContent = name;
+  document.getElementById('pane-html').innerHTML = '<div class="loading-row"><span class="spinner"></span> Cargando…</div>';
+  document.getElementById('pane-raw').textContent  = '';
+
+  try {
+    const data = await fetchFile(name);       // AJAX GET — JSON response
+    document.getElementById('pane-html').innerHTML = data.html;
+    document.getElementById('pane-raw').textContent  = data.raw;
+  } catch (err) {
+    document.getElementById('pane-html').innerHTML = `<p style="color:var(--red);font-family:var(--mono);font-size:13px">Error: ${escapeHtml(err.message)}</p>`;
+    toast(err.message, 'err');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Toggle HTML / RAW en el lector
+// ═══════════════════════════════════════════════════════════════════════════
+document.getElementById('btn-html').addEventListener('click', () => {
+  document.getElementById('pane-html').classList.add('active');
+  document.getElementById('pane-raw').classList.remove('active');
+  document.getElementById('btn-html').classList.add('on');
+  document.getElementById('btn-raw').classList.remove('on');
+});
+document.getElementById('btn-raw').addEventListener('click', () => {
+  document.getElementById('pane-raw').classList.add('active');
+  document.getElementById('pane-html').classList.remove('active');
+  document.getElementById('btn-raw').classList.add('on');
+  document.getElementById('btn-html').classList.remove('on');
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Crear nuevo archivo
+// ═══════════════════════════════════════════════════════════════════════════
+document.getElementById('btn-show-create').addEventListener('click', () => {
+  showView('view-create');
+  document.querySelectorAll('.file-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('new-name').focus();
+});
+
+document.getElementById('btn-cancel-create').addEventListener('click', () => {
+  showView('view-welcome');
+});
+
+document.getElementById('btn-create').addEventListener('click', async () => {
+  const nameInput    = document.getElementById('new-name');
+  const contentInput = document.getElementById('new-content');
+  const btn          = document.getElementById('btn-create');
+
+  const name    = nameInput.value.trim();
+  const content = contentInput.value.trim();
+
+  if (!name) { toast('El nombre del archivo es requerido.', 'err'); nameInput.focus(); return; }
+  if (!content) { toast('El contenido no puede estar vacío.', 'err'); contentInput.focus(); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Guardando…';
+
+  try {
+    const result = await createFile(name, content); // AJAX POST — JSON body + response
+    toast(result.message, 'ok');
+
+    // Limpiar formulario
+    nameInput.value    = '';
+    contentInput.value = '';
+
+    // Actualizar lista y abrir el nuevo archivo
+    await loadFileList();
+    const newItem = document.querySelector(`[data-name="${CSS.escape(result.name)}"]`);
+    openFile(result.name, newItem);
+
+  } catch (err) {
+    toast(err.message, 'err');
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Guardar archivo';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Inicialización
+// ═══════════════════════════════════════════════════════════════════════════
+loadFileList();
+</script>
+</body>
+</html>

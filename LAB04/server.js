@@ -28,15 +28,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //  Rutas estáticas 
-// Servir index.html en /lab03 y /lab03/
-app.get(['/lab03', '/lab03/'], (req, res) => {
+// Servir index.html en /lab04 y /lab04/
+app.get(['/lab04', '/lab04/'], (req, res) => {
   res.sendFile(path.resolve(__dirname, 'index.html'));
 });
 
 // API: Listar archivos Markdown 
-// GET /lab03/api/files
+// GET /lab04/api/files
 // Responde con JSON: { files: [ { name, size, modified }, ... ] }
-app.get('/lab03/api/files', (req, res) => {
+app.get('/lab04/api/files', (req, res) => {
   fs.readdir(MD_DIR, (err, items) => {
     if (err) {
       console.error('Error leyendo directorio:', err);
@@ -62,9 +62,9 @@ app.get('/lab03/api/files', (req, res) => {
 });
 
 // ─── API: Ver contenido de un archivo Markdown ───────────────────────────────
-// GET /lab03/api/files/:name
+// GET /lab04/api/files/:name
 // Responde con JSON: { name, raw, html }
-app.get('/lab03/api/files/:name', (req, res) => {
+app.get('/lab04/api/files/:name', (req, res) => {
   const fileName = req.params.name;
 
   // Seguridad: solo permitir nombres de archivo simples (sin path traversal)
@@ -94,10 +94,10 @@ app.get('/lab03/api/files/:name', (req, res) => {
 });
 
 // ─── API: Crear nuevo archivo Markdown ───────────────────────────────────────
-// POST /lab03/api/files
+// POST /lab04/api/files
 // Body JSON: { name: "titulo", content: "# Contenido..." }
 // Responde con JSON: { success, name, message }
-app.post('/lab03/api/files', (req, res) => {
+app.post('/lab04/api/files', (req, res) => {
   let { name, content } = req.body;
 
   if (!name || !content) {
@@ -139,5 +139,5 @@ app.post('/lab03/api/files', (req, res) => {
 app.listen(PORT, () => {
   console.log(`\n Servidor escuchando en: http://localhost:${PORT}`);
   console.log(` Archivos Markdown en:   ${MD_DIR}`);
-  console.log(` Aplicación web en:      http://localhost:${PORT}/lab03\n`);
+  console.log(` Aplicación web en:      http://localhost:${PORT}/lab04\n`);
 });

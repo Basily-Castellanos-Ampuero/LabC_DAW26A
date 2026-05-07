@@ -39,7 +39,7 @@ EXPOSE 3000
 
 # ── Healthcheck: verifica que el servidor responda ────────────────
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost:3000/lab03 || exit 1
+  CMD wget -qO- http://localhost:3000/lab04 || exit 1
 
 # ── Comando de inicio ─────────────────────────────────────────────
 CMD ["node", "server.js"]

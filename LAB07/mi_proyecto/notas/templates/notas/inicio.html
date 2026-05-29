@@ -1,0 +1,10 @@
+{% extends 'notas/base.html' %}
+{% block contenido %}
+<h1>Sistema de Notas por Alumno</h1>
+<p>Selecciona una sección:</p>
+<ul>
+    <li><a href="{% url 'lista_alumnos' %}">Ver Alumnos</a> | <a href="{% url 'crear_alumno' %}">Agregar Alumno</a></li>
+    <li><a href="{% url 'lista_cursos' %}">Ver Cursos</a> | <a href="{% url 'crear_curso' %}">Agregar Curso</a></li>
+    <li><a href="{% url 'lista_notas' %}">Ver Notas</a> | <a href="{% url 'crear_nota' %}">Registrar Nota</a></li>
+</ul>
+{% endblock %}

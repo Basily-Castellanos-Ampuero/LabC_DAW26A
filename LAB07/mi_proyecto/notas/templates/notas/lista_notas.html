@@ -1,0 +1,18 @@
+{% extends 'notas/base.html' %}
+{% block contenido %}
+<h1>Notas por Curso</h1>
+<a class="btn" href="{% url 'crear_nota' %}">+ Registrar Nota</a>
+<table>
+    <tr><th>Alumno</th><th>Curso</th><th>Nota</th><th>Fecha</th></tr>
+    {% for nota in notas %}
+    <tr>
+        <td>{{ nota.alumno }}</td>
+        <td>{{ nota.curso }}</td>
+        <td>{{ nota.nota }}</td>
+        <td>{{ nota.fecha_registro }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No hay notas registradas.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

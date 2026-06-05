@@ -1,0 +1,61 @@
+{% extends "destinos_turisticos/base.html" %}
+
+{% block titulo %}Eliminar Destino{% endblock %}
+
+{% block estilos_extra %}
+<style>
+    /* ===== CAJA DE CONFIRMACION ===== */
+    .caja-confirmar {
+        background-color: white;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 32px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+
+    .caja-confirmar .icono {
+        font-size: 3rem;
+        margin-bottom: 16px;
+    }
+
+    .caja-confirmar p {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 8px;
+        line-height: 1.6;
+    }
+
+    .caja-confirmar strong {
+        color: #1a3c5e;
+        font-size: 1.1rem;
+    }
+
+    .botones-confirmar {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 24px;
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<h2>Eliminar Destino</h2>
+
+<div class="caja-confirmar">
+    <div class="icono">⚠️</div>
+    <p>¿Estás seguro de que deseas eliminar el destino:</p>
+    <p><strong>{{ destino.nombreCiudad }}</strong>?</p>
+    <p>Esta acción no se puede deshacer.</p>
+
+    <div class="botones-confirmar">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-peligro">🗑️ Sí, eliminar</button>
+        </form>
+        <a href="{% url 'lista_destinos' %}" class="btn btn-gris">✖ Cancelar</a>
+    </div>
+</div>
+{% endblock %}

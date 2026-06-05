@@ -1,0 +1,156 @@
+{% extends "destinos_turisticos/base.html" %}
+
+{% block titulo %}Lista de Destinos Turísticos{% endblock %}
+
+{% block estilos_extra %}
+<style>
+    /* ===== GRILLA DE DESTINOS ===== */
+    .grilla {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+    }
+
+    /* ===== TARJETA DE DESTINO ===== */
+    .tarjeta {
+        background-color: white;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+    }
+
+    .tarjeta img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .tarjeta-sin-imagen {
+        width: 100%;
+        height: 200px;
+        background-color: #dce8f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #888;
+    }
+
+    .tarjeta-cuerpo {
+        padding: 16px;
+    }
+
+    .tarjeta-cuerpo h3 {
+        font-size: 1.2rem;
+        color: #1a3c5e;
+        margin-bottom: 8px;
+    }
+
+    .tarjeta-cuerpo p {
+        font-size: 0.9rem;
+        color: #555;
+        margin-bottom: 12px;
+        line-height: 1.5;
+    }
+
+    /* ===== PRECIO Y OFERTA ===== */
+    .precio-normal {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #1a3c5e;
+    }
+
+    .precio-oferta {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #c0392b;
+    }
+
+    .etiqueta-oferta {
+        display: inline-block;
+        background-color: #e8a020;
+        color: white;
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin-left: 8px;
+        vertical-align: middle;
+    }
+
+    /* ===== ACCIONES DE TARJETA ===== */
+    .tarjeta-acciones {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    /* ===== MENSAJE VACÍO ===== */
+    .vacio {
+        text-align: center;
+        padding: 60px 20px;
+        color: #888;
+    }
+
+    .vacio p {
+        font-size: 1.1rem;
+        margin-bottom: 16px;
+    }
+
+    /* ===== CABECERA DE SECCIÓN ===== */
+    .cabecera-seccion {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .cabecera-seccion h2 {
+        margin-bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="cabecera-seccion">
+    <h2>Todos los Destinos</h2>
+    <a href="{% url 'agregar_destino' %}" class="btn btn-secundario">➕ Agregar Destino</a>
+</div>
+
+{% if destinos %}
+    <div class="grilla">
+        {% for destino in destinos %}
+        <div class="tarjeta">
+
+            {% if destino.imagenCiudad %}
+                <img src="{{ destino.imagenCiudad.url }}" alt="{{ destino.nombreCiudad }}">
+            {% else %}
+                <div class="tarjeta-sin-imagen">🏙️</div>
+            {% endif %}
+
+            <div class="tarjeta-cuerpo">
+                <h3>{{ destino.nombreCiudad }}</h3>
+                <p>{{ destino.descripcionCiudad }}</p>
+
+                {% if destino.ofertaTour %}
+                    <span class="precio-oferta">S/. {{ destino.precioTour }}</span>
+                    <span class="etiqueta-oferta">🔥 OFERTA</span>
+                {% else %}
+                    <span class="precio-normal">S/. {{ destino.precioTour }}</span>
+                {% endif %}
+
+                <div class="tarjeta-acciones">
+                    <a href="{% url 'modificar_destino' destino.pk %}" class="btn btn-primario">✏️ Editar</a>
+                    <a href="{% url 'eliminar_destino' destino.pk %}" class="btn btn-peligro">🗑️ Eliminar</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+{% else %}
+    <div class="vacio">
+        <p>No hay destinos turísticos registrados todavía.</p>
+        <a href="{% url 'agregar_destino' %}" class="btn btn-secundario">➕ Agregar el primero</a>
+    </div>
+{% endif %}
+{% endblock %}

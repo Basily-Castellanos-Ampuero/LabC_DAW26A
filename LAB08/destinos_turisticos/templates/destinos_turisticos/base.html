@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Destinos Turísticos{% endblock %}</title>
+    <style>
+        /* ===== RESET Y BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            background-color: #f5f0e8;
+            color: #2c2c2c;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background-color: #1a3c5e;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            background-color: #e8a020;
+            padding: 12px 40px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== MAIN ===== */
+        main {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* ===== MENSAJES ===== */
+        .mensajes {
+            margin-bottom: 20px;
+        }
+
+        .mensaje-exito {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background-color: #1a3c5e;
+            color: #ccc;
+            text-align: center;
+            padding: 16px;
+            margin-top: 40px;
+            font-size: 0.85rem;
+        }
+
+        /* ===== TITULOS DE SECCION ===== */
+        h2 {
+            color: #1a3c5e;
+            border-bottom: 3px solid #e8a020;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+        }
+
+        /* ===== BOTONES ===== */
+        a.btn, button.btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            font-family: Georgia, serif;
+        }
+
+        a.btn-primario, button.btn-primario {
+            background-color: #1a3c5e;
+            color: white;
+        }
+
+        a.btn-secundario, button.btn-secundario {
+            background-color: #e8a020;
+            color: white;
+        }
+
+        a.btn-peligro, button.btn-peligro {
+            background-color: #c0392b;
+            color: white;
+        }
+
+        a.btn-gris, button.btn-gris {
+            background-color: #888;
+            color: white;
+        }
+
+        a.btn:hover, button.btn:hover {
+            opacity: 0.85;
+        }
+    </style>
+    {% block estilos_extra %}{% endblock %}
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>🌍 Destinos Turísticos</h1>
+        <p>Descubre los mejores lugares del Perú</p>
+    </div>
+</header>
+
+<nav>
+    <a href="{% url 'lista_destinos' %}">🏠 Inicio</a>
+    <a href="{% url 'agregar_destino' %}">➕ Agregar Destino</a>
+</nav>
+
+<main>
+    {% if messages %}
+    <div class="mensajes">
+        {% for message in messages %}
+            <div class="mensaje-exito">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block contenido %}{% endblock %}
+</main>
+
+<footer>
+    <p>Laboratorio 08 — Desarrollo de Aplicaciones Web — {{ "now"|date:"Y" }}</p>
+</footer>
+
+</body>
+</html>

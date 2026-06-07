@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Géneros</h2>
+<p style="margin-bottom:14px; color:#555;">
+    Relación <strong>Muchos a Muchos</strong>: cada género puede estar en muchos libros y cada libro puede tener varios géneros.
+</p>
+
+<a href="{% url 'genero_nuevo' %}" class="btn btn-primary" style="margin-bottom:16px; display:inline-block;">+ Nuevo Género</a>
+
+{% if generos %}
+<table>
+    <thead>
+        <tr><th>#</th><th>Nombre</th><th>Libros asociados</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+        {% for genero in generos %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ genero.nombre }}</td>
+            <td>{{ genero.libro_set.count }}</td>
+            <td>
+                <a href="{% url 'genero_eliminar' genero.pk %}" class="btn btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay géneros registrados aún.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Enviar Email</h2>
+
+<div class="nota">
+    <strong>Nota:</strong> Se usa <code>EMAIL_BACKEND = 'console'</code>.
+    El correo no se envía realmente. aparece impreso en la terminal del servidor.
+</div>
+
+<div class="card">
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+                <p style="color:red; font-size:0.85rem;">{{ field.errors.as_text }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-success" style="margin-top:12px;">Enviar</button>
+    </form>
+</div>
+{% endblock %}

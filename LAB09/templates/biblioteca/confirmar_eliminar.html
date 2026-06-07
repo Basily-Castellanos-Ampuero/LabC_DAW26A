@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Confirmar eliminación</h2>
+
+<div class="card">
+    <p>¿Está seguro de que desea eliminar el {{ tipo }} <strong>"{{ objeto }}"</strong>?</p>
+    {% if tipo == 'autor' %}
+        <p style="color:#c0392b; font-size:0.9rem; margin-top:8px;">
+            ⚠️ También se eliminarán todos los libros asociados a este autor.
+        </p>
+    {% endif %}
+
+    <form method="post" style="margin-top:16px;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+        <a href="javascript:history.back()" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

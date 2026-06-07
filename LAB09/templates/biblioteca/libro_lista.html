@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Libros</h2>
+<p style="margin-bottom:14px; color:#555;">
+    Los libros demuestran ambas relaciones: <strong>ForeignKey</strong> con Autor (uno a muchos) y <strong>ManyToManyField</strong> con Géneros.
+</p>
+
+<a href="{% url 'libro_nuevo' %}" class="btn btn-primary" style="margin-bottom:16px; display:inline-block;">+ Nuevo Libro</a>
+
+{% if libros %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Título</th>
+            <th>Autor (FK → Uno a Muchos)</th>
+            <th>Año</th>
+            <th>Géneros (M2M → Muchos a Muchos)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for libro in libros %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ libro.titulo }}</td>
+            <td>
+                <a href="{% url 'autor_detalle' libro.autor.pk %}">{{ libro.autor.nombre }}</a>
+            </td>
+            <td>{{ libro.año }}</td>
+            <td>
+                {% for g in libro.generos.all %}
+                    <span style="background:#16a085;color:white;padding:2px 8px;border-radius:12px;font-size:0.8rem;margin-right:4px;">{{ g.nombre }}</span>
+                {% empty %}
+                    -
+                {% endfor %}
+            </td>
+            <td class="acciones">
+                <a href="{% url 'libro_editar' libro.pk %}" class="btn btn-primary">Editar</a>
+                <a href="{% url 'libro_eliminar' libro.pk %}" class="btn btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay libros registrados aún.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Bienvenido a la Biblioteca</h2>
+
+<div class="stats">
+    <div class="stat-box">
+        <h3>{{ total_autores }}</h3>
+        <p>Autores registrados</p>
+    </div>
+    <div class="stat-box">
+        <h3>{{ total_libros }}</h3>
+        <p>Libros en catálogo</p>
+    </div>
+    <div class="stat-box">
+        <h3>{{ total_generos }}</h3>
+        <p>Géneros literarios</p>
+    </div>
+</div>
+
+<div class="card">
+    <h3>¿Qué demuestra este proyecto?</h3>
+    <ul style="margin-top:10px; padding-left:20px; line-height:1.8;">
+        <li><strong>Relacion Uno a Muchos:</strong> Un Autor puede tener muchos Libros (ForeignKey).</li>
+        <li><strong>Relación Muchos a Muchos:</strong> Un Libro puede pertenecer a varios Géneros y un Género puede tener varios Libros (ManyToManyField).</li>
+        <li><strong>Impresión de PDF:</strong> Se genera el catálogo completo de libros con ReportLab.</li>
+        <li><strong>Envío de Email:</strong> Formulario para enviar correos (se imprime en consola del servidor).</li>
+    </ul>
+</div>
+
+<div class="acciones">
+    <a href="{% url 'autor_nuevo' %}" class="btn btn-primary">+ Agregar Autor</a>
+    <a href="{% url 'libro_nuevo' %}" class="btn btn-primary">+ Agregar Libro</a>
+    <a href="{% url 'generar_pdf' %}" class="btn btn-success" target="_blank"> Ver PDF</a>
+    <a href="{% url 'enviar_email' %}" class="btn btn-secondary"> Enviar Email</a>
+</div>
+{% endblock %}

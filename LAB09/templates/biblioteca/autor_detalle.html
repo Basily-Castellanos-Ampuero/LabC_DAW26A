@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ autor.nombre }}</h2>
+
+<div class="card">
+    <p><strong>Email:</strong> {{ autor.email|default:"No registrado" }}</p>
+    <p><strong>País:</strong> {{ autor.pais|default:"No registrado" }}</p>
+    <p style="margin-top:8px;">
+        <a href="{% url 'autor_editar' autor.pk %}" class="btn btn-primary">Editar</a>
+        <a href="{% url 'autor_lista' %}" class="btn btn-secondary">Volver</a>
+    </p>
+</div>
+
+<h3 style="margin-bottom:10px;">Libros de este autor (Relación Uno a Muchos)</h3>
+{% if libros %}
+<table>
+    <thead>
+        <tr><th>Título</th><th>Año</th><th>Géneros</th></tr>
+    </thead>
+    <tbody>
+        {% for libro in libros %}
+        <tr>
+            <td>{{ libro.titulo }}</td>
+            <td>{{ libro.año }}</td>
+            <td>
+                {% for g in libro.generos.all %}
+                    <span style="background:#2980b9;color:white;padding:2px 8px;border-radius:12px;font-size:0.8rem;margin-right:4px;">{{ g.nombre }}</span>
+                {% empty %}
+                    -
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Este autor no tiene libros registrados.</p>
+{% endif %}
+{% endblock %}

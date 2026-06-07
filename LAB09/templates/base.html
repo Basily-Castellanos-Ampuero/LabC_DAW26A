@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca - Lab09</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 16px 24px;
+        }
+
+        header h1 { font-size: 1.4rem; }
+        header p { font-size: 0.85rem; color: #aaa; margin-top: 2px; }
+
+        nav {
+            background: #34495e;
+            display: flex;
+            gap: 4px;
+            padding: 8px 16px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover { background: #2c3e50; }
+
+        .container {
+            max-width: 960px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        h2 { margin-bottom: 16px; color: #2c3e50; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px 14px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th { background: #2c3e50; color: white; }
+        tr:hover { background: #f0f4f8; }
+
+        a { color: #2980b9; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .btn-primary { background: #2980b9; color: white; }
+        .btn-danger { background: #c0392b; color: white; }
+        .btn-secondary { background: #7f8c8d; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn:hover { opacity: 0.85; }
+
+        .acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        form label { display: block; margin-bottom: 4px; font-weight: bold; }
+        form input[type=text],
+        form input[type=email],
+        form input[type=number],
+        form textarea,
+        form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        form textarea { height: 100px; resize: vertical; }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+        }
+
+        .stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+        .stat-box {
+            background: white;
+            padding: 16px 24px;
+            border-left: 4px solid #2980b9;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            flex: 1;
+            min-width: 140px;
+        }
+        .stat-box h3 { font-size: 2rem; color: #2980b9; }
+        .stat-box p { font-size: 0.85rem; color: #666; }
+
+        .mensaje {
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .mensaje-ok { background: #d5f5e3; border: 1px solid #27ae60; color: #1e8449; }
+        .mensaje-error { background: #fadbd8; border: 1px solid #c0392b; color: #a93226; }
+
+        .nota {
+            background: #fef9e7;
+            border: 1px solid #f1c40f;
+            padding: 10px 14px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #7d6608;
+            margin-bottom: 16px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1> Biblioteca - Lab09</h1>
+    <p>Desarrollo de Aplicaciones Web — Django Relaciones y Servicios</p>
+</header>
+
+<nav>
+    <a href="{% url 'inicio' %}"> Inicio</a>
+    <a href="{% url 'autor_lista' %}"> Autores</a>
+    <a href="{% url 'genero_lista' %}"> Géneros</a>
+    <a href="{% url 'libro_lista' %}"> Libros</a>
+    <a href="{% url 'generar_pdf' %}" target="_blank"> PDF</a>
+    <a href="{% url 'enviar_email' %}"> Email</a>
+</nav>
+
+<div class="container">
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="mensaje {% if msg.tags == 'error' %}mensaje-error{% else %}mensaje-ok{% endif %}">
+                {{ msg }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    Lab09 — Django: Relaciones BD, PDF y Emails · SQLite
+</footer>
+
+</body>
+</html>

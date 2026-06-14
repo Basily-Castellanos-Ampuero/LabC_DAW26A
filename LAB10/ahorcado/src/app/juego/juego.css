@@ -1,0 +1,95 @@
+.contenedor {
+  width: 500px;
+  margin: 40px auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+}
+
+.dibujo {
+  width: 200px;
+  height: 220px;
+}
+
+.dibujo line,
+.dibujo circle {
+  stroke: #333;
+  stroke-width: 4;
+  fill: none;
+}
+
+.palabra {
+  margin: 20px 0;
+}
+
+.palabra span {
+  display: inline-block;
+  width: 30px;
+  font-size: 28px;
+  font-weight: bold;
+  border-bottom: 3px solid #333;
+  margin: 0 4px;
+}
+
+.intentos {
+  color: #555;
+}
+
+.mensaje {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+.ganar {
+  color: #2e7d32;
+}
+
+.perder {
+  color: #c62828;
+}
+
+.teclado {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 20px 0;
+}
+
+.teclado button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.teclado button:hover {
+  background-color: #0d47a1;
+}
+
+.teclado button:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+
+.reiniciar {
+  padding: 12px 20px;
+  border: none;
+  background-color: #555;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.reiniciar:hover {
+  background-color: #333;
+}

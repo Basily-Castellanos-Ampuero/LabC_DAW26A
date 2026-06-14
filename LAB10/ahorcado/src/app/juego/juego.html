@@ -1,0 +1,39 @@
+<div class="contenedor">
+  <h1>Juego del Ahorcado</h1>
+
+  <svg class="dibujo" viewBox="0 0 200 220">
+    <!-- estructura de la horca, siempre visible -->
+    <line x1="20" y1="210" x2="120" y2="210" />
+    <line x1="60" y1="210" x2="60" y2="20" />
+    <line x1="60" y1="20" x2="140" y2="20" />
+    <line x1="140" y1="20" x2="140" y2="45" />
+    <!-- partes del muneco que aparecen segun los errores -->
+    <circle *ngIf="errores >= 1" cx="140" cy="60" r="15" />
+    <line *ngIf="errores >= 2" x1="140" y1="75" x2="140" y2="130" />
+    <line *ngIf="errores >= 3" x1="140" y1="90" x2="115" y2="110" />
+    <line *ngIf="errores >= 4" x1="140" y1="90" x2="165" y2="110" />
+    <line *ngIf="errores >= 5" x1="140" y1="130" x2="115" y2="160" />
+    <line *ngIf="errores >= 6" x1="140" y1="130" x2="165" y2="160" />
+  </svg>
+
+  <div class="palabra">
+    <span *ngFor="let letra of palabraMostrada">{{ letra }}</span>
+  </div>
+
+  <p class="intentos">Errores: {{ errores }} de {{ maxErrores }}</p>
+
+  <p *ngIf="gano" class="mensaje ganar">Ganaste. La palabra era {{ palabra }}.</p>
+  <p *ngIf="perdio" class="mensaje perder">Perdiste. La palabra era {{ palabra }}.</p>
+
+  <div class="teclado">
+    <button
+      *ngFor="let letra of abecedario"
+      (click)="intentar(letra)"
+      [disabled]="letraUsada(letra) || juegoTerminado"
+    >
+      {{ letra }}
+    </button>
+  </div>
+
+  <button class="reiniciar" (click)="nuevoJuego()">Reiniciar</button>
+</div>
